@@ -11,7 +11,7 @@ const server = http.Server(app);
 
 setupWebsocket(server); //Assim a função é disparada quando o programa iniciar;
 
-mongoose.connect('mongodb+srv://omnistack:omnistack@cluster0-iyold.mongodb.net/week10?retryWrites=true&w=majority',{
+mongoose.connect('URL conexão do mongoDb atlas',{
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
