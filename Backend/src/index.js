@@ -1,8 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const http = require('http');
 const routes = require('./routes');
 
+const { setupWebsocket } = require('./websocket');
+
 const app = express();
+//servidor http fora do express
+const server = http.Server(app);
+
+setupWebsocket(server); //Assim a função é disparada quando o programa iniciar;
 
 mongoose.connect('mongodb+srv://omnistack:omnistack@cluster0-iyold.mongodb.net/week10?retryWrites=true&w=majority',{
     useNewUrlParser: true,
@@ -13,10 +20,13 @@ mongoose.connect('mongodb+srv://omnistack:omnistack@cluster0-iyold.mongodb.net/w
 app.use(express.json());
 app.use(routes);
 
-app.listen(8080);
+server.listen(8080);
 
 
 // TIPOS DE PARÂMETROS:
 // Query Parans: request.query (filtros, ordenação, paginação, ...)
 // Route Parans: request.parans (Indentificar um recurso na alteração ou remoção)
 // Body: request.body (Dados para criação ou alteração de um registro)
+
+//yarn add socket.io para fazer comunicação em tempo real com o front-end
+//lembrar de deletar socket.io-client kkkkkk rs!

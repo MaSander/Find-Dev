@@ -5,10 +5,12 @@ import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import { MaterialIcons } from '@expo/vector-icons'; //Biblioteca de icons trazida pelo expo
 
 import Api from '../services/api';
+import { connect, disconnect, subscribeToNewDevs } from '../services/socket';
 
 function Main({ navigation }) {
     const [devs, setDevs] = useState([]);
     const [currentRegion, setCurrentRegion] = useState(null);
+    const [techs, setTechs] = useState('');
 
     useEffect(() => {
         async function loadInitialPosition() {
@@ -35,6 +37,25 @@ function Main({ navigation }) {
         loadInitialPosition();
     }, []);
 
+    // adiciona um novo dev ao array
+    useEffect(() => {
+        subscribeToNewDevs(dev => setDevs([...devs, dev]));// copiar tudo o que tem la dentro e adicionar um novo dev
+    }, [devs]);
+
+    function setupWebsocket() {
+        disconnect();
+
+        const {latitude, longitude} = currentRegion;
+        
+        connect(
+            latitude,
+            longitude,
+            techs,
+        );
+
+
+    }
+
     async function loadDevs() {
         const { latitude, longitude } = currentRegion;
 
@@ -47,6 +68,7 @@ function Main({ navigation }) {
         });
 
         setDevs(response.data.devs);
+        setupWebsocket();
     }
 
     // Pega a lat. e long. em que o mapa está
